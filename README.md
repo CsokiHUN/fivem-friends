@@ -4,11 +4,11 @@ Működéséhez szükséges a mysql script amit csináltam, megtalálod itt http
 Csatlakozz te is a FiveM Land discordjához, hogy további finomságokat találj!
 Discord: https://discord.gg/Zdaqj5EM5Z
 
-#Parancsok
+# Parancsok
 
 /friends /barátaim - Megnyitja a panelt.
 /togmyname - Be/Ki kapcsolja a saját név megjelenítését.
 
-#Képernyőképek
+# Képernyőképek
 ![pic1](https://i.imgur.com/a3KpB0K.png)
 ![pic2](https://i.imgur.com/hTuFhnU.png)
