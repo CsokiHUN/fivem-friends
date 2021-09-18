@@ -7,7 +7,6 @@ dependency("mysql") -- https://github.com/CsokiHUN/fivem-mysql
 
 shared_script("@es_extended/imports.lua")
 shared_script("shared.lua")
-shared_script("@dev/utils.lua")
 
 client_script("client.lua")
 server_scripts({
