@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Csoki - Friends</title>
+
+    <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="d-flex justify-content-center align-items-center">
+    <div id="app" class="w-25">
+      <div v-if="visible" class="p-1 bg-light text-dark rounded">
+        <div class="header px-1 d-flex justify-content-between">
+          <h6>Barátok</h6>
+          <a @click="close" class="text-dark" href="#">
+            <i class="fas fa-times-circle"></i>
+          </a>
+        </div>
+        <div class="content mx-1 mb-2">
+          <div class="mb-2">
+            <button @click="changePage('friends')" class="btn btn-primary w-50">
+              Jelenlegi barátok
+            </button>
+            <button
+              @click="changePage('pendings')"
+              class="btn btn-secondary w-50"
+            >
+              Kérelmek
+            </button>
+          </div>
+
+          <h6 class="mt-2 text-center">{{ panelTitles[page] }}</h6>
+          <div class="list-group">
+            <div
+              v-for="item in listData"
+              class="
+                list-group-item
+                d-flex
+                justify-items-between
+                align-items-center
+              "
+            >
+              <div class="w-100">
+                <span class="font-weight-bold">{{ item.name }}</span>
+                <br />
+                Időpont:
+                <span class="badge badge-secondary"
+                  >{{ formatDate(item.date) }}</span
+                >
+              </div>
+              <a
+                v-if="page == 'pendings' && item.accept"
+                @click="accept(item)"
+                class="text-success mr-2"
+                href="#"
+              >
+                <i class="fas fa-check"></i>
+              </a>
+              <a @click="del(item)" class="text-danger" href="#">
+                <i class="fas fa-times"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="rounded border">
+          <h6 class="pt-1 text-center">Új barát hozzáadása</h6>
+          <div class="row px-2 pb-2">
+            <div class="col-6">
+              <input
+                v-model="targetID"
+                class="form-control"
+                type="number"
+                placeholder="ID"
+              />
+            </div>
+            <div class="col-6">
+              <button @click="sendNew" class="btn btn-primary w-100">
+                Kérelem küldése
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.6/vue.global.prod.min.js"
+    integrity="sha512-k+TjfEzBWzwvA/MPlhAdPMGEe4jAd0rA8TK/5qF3iLTa1xAc1Ok9Ox3BPhnJtfZUSrgIxOJb1HHTMEFABE/fGQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <script src="ui.js"></script>
+</html>
