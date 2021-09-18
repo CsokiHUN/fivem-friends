@@ -6,8 +6,8 @@ Discord: https://discord.gg/Zdaqj5EM5Z
 
 # Parancsok
 
-/friends /barátaim - Megnyitja a panelt.
-/togmyname - Be/Ki kapcsolja a saját név megjelenítését.
+- /friends /barátaim - Megnyitja a panelt.
+- /togmyname - Be/Ki kapcsolja a saját név megjelenítését.
 
 # Képernyőképek
 ![pic1](https://i.imgur.com/a3KpB0K.png)
