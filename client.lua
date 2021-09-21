@@ -4,7 +4,7 @@ local panelState = false
 
 local Friends = {}
 
-local myName = true
+local myName = false
 
 local function updateFriends(data)
 	if not data then
