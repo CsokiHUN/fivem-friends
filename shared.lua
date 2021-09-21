@@ -17,19 +17,17 @@ function DrawText3D(coords, text, scale, r, g, b, alpha)
 	g = g or 255
 	b = b or 255
 
-	local onScreen, screenX, screenY = GetScreenCoordFromWorldCoord(coords.x, coords.y, coords.z)
+	SetDrawOrigin(coords)
 
-	if onScreen then
-		SetTextScale(0.3 * scale, 0.3 * scale)
-		SetTextFont(0)
-		SetTextProportional(1)
-		SetTextColour(r, g, b, math.floor(alpha))
-		SetTextOutline()
-		SetTextCentre(1)
-		BeginTextCommandDisplayText("STRING")
-		AddTextComponentString(text)
-		EndTextCommandDisplayText(screenX, screenY)
-	end
+	SetTextScale(0.3 * scale, 0.3 * scale)
+	SetTextFont(0)
+	SetTextProportional(1)
+	SetTextColour(r, g, b, math.floor(alpha))
+	SetTextOutline()
+	SetTextCentre(1)
+	BeginTextCommandDisplayText("STRING")
+	AddTextComponentString(text)
+	EndTextCommandDisplayText(0, 0)
 end
 
 function split(inputstr, sep)

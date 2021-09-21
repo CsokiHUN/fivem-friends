@@ -4,7 +4,7 @@ local panelState = false
 
 local Friends = {}
 
-local myName = false
+local myName = true
 
 local function updateFriends(data)
 	if not data then
@@ -19,7 +19,7 @@ local function updateFriends(data)
 	return Friends
 end
 
-function requestPlayers()
+local function requestPlayers()
 	ESX.TriggerServerCallback("requestPlayerNames", function(result, friends)
 		serverPlayers = result
 
@@ -28,13 +28,19 @@ function requestPlayers()
 end
 AddEventHandler("esx:playerLoaded", requestPlayers)
 
-function getPedHeadCoords(ped)
+local function getPedHeadCoords(ped)
 	local coords = GetWorldPositionOfEntityBone(ped, 101)
 	if coords == vector3(0, 0, 0) then
 		coords = GetEntityCoords(ped) + vector3(0, 0, 1)
 	else
 		coords = coords + vector3(0, 0, 0.25)
 	end
+
+	local frameTime = GetFrameTime()
+	local vel = GetEntityVelocity(ped)
+
+	coords = vector3(coords.x + vel.x * frameTime, coords.y + vel.y * frameTime, coords.z + vel.z * frameTime)
+
 	return coords
 end
 
@@ -151,6 +157,12 @@ RegisterNUICallback("sendNew", function(data, cb)
 	if targetPlayer and targetPlayer < 0 then
 		cb({ success = false })
 		notify("Hibás a megadott ID!", "error")
+		return
+	end
+
+	if data.id == GetPlayerServerId(PlayerId()) then
+		cb({ success = false })
+		notify("Saját magadat nem tudod barátnak jelölni!", "error")
 		return
 	end
 
