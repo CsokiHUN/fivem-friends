@@ -4,7 +4,7 @@ local panelState = false
 
 local Friends = {}
 
-local myName = false
+local myName = true
 
 local function updateFriends(data)
 	if not data then
@@ -89,16 +89,19 @@ CreateThread(function()
 		for _, playerID in pairs(GetActivePlayers()) do
 			if playerID == PlayerId() and myName or playerID ~= PlayerId() then
 				local ped = GetPlayerPed(playerID)
-				if DoesEntityExist(ped) then
-					local coords = GetEntityCoords(ped)
-					if #(coords - myCoords) < STREAM_DISTANCE then
-						streamedPlayers[playerID] = {
-							ped = ped,
-							serverID = GetPlayerServerId(playerID),
-							helmet = GetPedDrawableVariation(ped, 1) > 0,
-						}
-					end
+				if not (DoesEntityExist(ped) and HasEntityClearLosToEntity(myPed, ped, 17)) then
+					goto skip
 				end
+
+				local coords = GetEntityCoords(ped)
+				if #(coords - myCoords) < STREAM_DISTANCE then
+					streamedPlayers[playerID] = {
+						ped = ped,
+						serverID = GetPlayerServerId(playerID),
+						helmet = GetPedDrawableVariation(ped, 1) > 0,
+					}
+				end
+				::skip::
 			end
 		end
 
@@ -113,37 +116,44 @@ CreateThread(function()
 		local _playerID = PlayerId()
 
 		for playerID, data in pairs(streamedPlayers) do
+			if not DoesEntityExist(data.ped) then
+				goto skip
+			end
+
 			local coords = GetEntityCoords(data.ped)
 			local dist = #(coords - myCoords)
-			if dist < STREAM_DISTANCE then
-				local scale = 1 - dist / STREAM_DISTANCE
-
-				local headCoords = getPedHeadCoords(data.ped)
-				local playerData = getPlayerData(data.serverID)
-				if playerData then
-					local talking = NetworkIsPlayerTalking(playerID)
-					local color = talking and TALKING_COLOR or { r = 255, g = 255, b = 255 }
-
-					local name = ""
-					if Friends[playerData.license] or playerID == _playerID then
-						name = data.helmet and "Maszkos alak " or playerData.name .. " "
-					end
-
-					DrawText3D(
-						headCoords,
-						name .. "(" .. data.serverID .. ")",
-						-- data.license,
-						scale,
-						color.r,
-						color.g,
-						color.b,
-						255 * scale
-					)
-				end
+			if dist > STREAM_DISTANCE then
+				goto skip
 			end
+
+			local scale = 1 - dist / STREAM_DISTANCE
+
+			local headCoords = getPedHeadCoords(data.ped)
+			local playerData = getPlayerData(data.serverID)
+			if playerData then
+				local talking = NetworkIsPlayerTalking(playerID)
+				local color = talking and TALKING_COLOR or { r = 255, g = 255, b = 255 }
+
+				local name = ""
+				if Friends[playerData.license] or playerID == _playerID then
+					name = data.helmet and "Maszkos alak " or playerData.name .. " "
+				end
+
+				DrawText3D(
+					headCoords,
+					name .. "(" .. data.serverID .. ")",
+					scale,
+					color.r,
+					color.g,
+					color.b,
+					255 * scale
+				)
+			end
+
+			::skip::
 		end
 
-		Wait(1)
+		Wait(5)
 	end
 end)
 

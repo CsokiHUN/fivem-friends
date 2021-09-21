@@ -28,6 +28,8 @@ function DrawText3D(coords, text, scale, r, g, b, alpha)
 	BeginTextCommandDisplayText("STRING")
 	AddTextComponentString(text)
 	EndTextCommandDisplayText(0, 0)
+
+	ClearDrawOrigin()
 end
 
 function split(inputstr, sep)
