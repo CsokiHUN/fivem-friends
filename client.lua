@@ -20,12 +20,14 @@ local function updateFriends(data)
 end
 
 local function requestPlayers()
+	Wait(1000)
 	ESX.TriggerServerCallback("requestPlayerNames", function(result, friends)
 		serverPlayers = result
 
 		updateFriends(friends)
 	end)
 end
+CreateThread(requestPlayers)
 AddEventHandler("esx:playerLoaded", requestPlayers)
 
 local function getPedHeadCoords(ped)

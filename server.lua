@@ -52,6 +52,9 @@ end)
 
 AddEventHandler("esx:playerLoaded", function(player)
 	local xPlayer = ESX.GetPlayerFromId(player)
+	if not xPlayer then
+		return
+	end
 
 	Names[xPlayer.identifier] = xPlayer.getName()
 
@@ -64,10 +67,12 @@ ESX.RegisterServerCallback("requestPlayerNames", function(source, cb)
 	for _, player in pairs(GetPlayers()) do
 		local xPlayer = ESX.GetPlayerFromId(player)
 
-		result[tonumber(player)] = {
-			name = xPlayer.getName(),
-			license = xPlayer.identifier,
-		}
+		if xPlayer then
+			result[tonumber(player)] = {
+				name = xPlayer.getName(),
+				license = xPlayer.identifier,
+			}
+		end
 	end
 
 	cb(result, getPlayerFriends(source))
@@ -98,6 +103,11 @@ end
 ESX.RegisterServerCallback("newFriendRequest", function(player, cb, targetPlayer)
 	local xPlayer = ESX.GetPlayerFromId(player)
 	local xTarget = ESX.GetPlayerFromId(targetPlayer)
+
+	if not xPlayer or not xTarget then
+		cb(false, "Hiba történt")
+		return
+	end
 
 	local sourceLicense = xPlayer.identifier
 	local targetLicense = xTarget.identifier
@@ -156,6 +166,10 @@ end)
 
 function getPlayerPendings(player)
 	local xPlayer = ESX.GetPlayerFromId(player)
+	if not xPlayer then
+		return {}
+	end
+
 	local license = xPlayer.identifier
 
 	if pendingFriends[license] then
@@ -169,6 +183,10 @@ end
 
 function getPlayerFriends(player)
 	local xPlayer = ESX.GetPlayerFromId(player)
+	if not xPlayer then
+		return {}
+	end
+
 	local license = xPlayer.identifier
 
 	if Friends[license] then
@@ -192,6 +210,9 @@ end)
 
 ESX.RegisterServerCallback("deleteFriend", function(player, cb, row, page)
 	local xPlayer = ESX.GetPlayerFromId(player)
+	if not xPlayer then
+		return cb(false, {})
+	end
 
 	if page == "pendings" then
 		local result = dbExec("DELETE FROM pendingFriends WHERE id = ?", row.dbID)
@@ -236,6 +257,9 @@ ESX.RegisterServerCallback("acceptFriendPending", function(player, cb, row)
 	Citizen.Await(loadPendingFriends())
 
 	local xPlayer = ESX.GetPlayerFromId(player)
+	if not xPlayer then
+		return cb(false, "Hiba történt!")
+	end
 
 	local result = dbQuery(
 		"INSERT INTO friends SET license1 = ?, license2 = ?, time = ?",
@@ -299,6 +323,9 @@ CreateThread(loadAllFriends)
 
 function loadPlayerFriends(player)
 	local xPlayer = ESX.GetPlayerFromId(player)
+	if not xPlayer then
+		return {}
+	end
 
 	Friends[xPlayer.identifier] = {}
 
@@ -320,6 +347,7 @@ function loadPlayerFriends(player)
 	)
 end
 
+--[[
 function findPlayerByLicense(license)
 	for _, player in pairs(GetPlayers()) do
 		local xPlayer = ESX.GetPlayerFromId(player)
@@ -331,9 +359,11 @@ function findPlayerByLicense(license)
 
 	return false
 end
+]]
 
 function updateOtherPlayer(license, msg)
-	local targetPlayer = findPlayerByLicense(license)
+	-- local targetPlayer = findPlayerByLicense(license)
+	local targetPlayer = ESX.GetPlayerFromIdentifier(license)
 	if targetPlayer then
 		TriggerClientEvent(
 			GetCurrentResourceName() .. "->updateDatas",
