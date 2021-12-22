@@ -52,13 +52,11 @@ end)
 
 AddEventHandler("esx:playerLoaded", function(player)
 	local xPlayer = ESX.GetPlayerFromId(player)
-	if not xPlayer then
-		return
+	if xPlayer then
+		Names[xPlayer.identifier] = xPlayer.getName()
+
+		loadPlayerFriends(player)
 	end
-
-	Names[xPlayer.identifier] = xPlayer.getName()
-
-	loadPlayerFriends(player)
 end)
 
 ESX.RegisterServerCallback("requestPlayerNames", function(source, cb)

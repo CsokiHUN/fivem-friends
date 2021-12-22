@@ -20,11 +20,13 @@ local function updateFriends(data)
 end
 
 local function requestPlayers()
-	Wait(1000)
-	ESX.TriggerServerCallback("requestPlayerNames", function(result, friends)
-		serverPlayers = result
+	CreateThread(function()
+		Wait(1000)
+		ESX.TriggerServerCallback("requestPlayerNames", function(result, friends)
+			serverPlayers = result
 
-		updateFriends(friends)
+			updateFriends(friends)
+		end)
 	end)
 end
 CreateThread(requestPlayers)
